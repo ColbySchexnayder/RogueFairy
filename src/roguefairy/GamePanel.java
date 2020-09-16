@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	Font mapFont;
 	
 	GamePanel(){
-		mapFont = new Font("Courier New", Font.PLAIN, 30);
+		mapFont = new Font("Courier New", Font.PLAIN, 15);
 		frameDraw = new Timer(1000/60, this);
 		frameDraw.start();
 	}
@@ -37,8 +37,19 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		g.setColor(Color.black);
 		g.fillRect(0, 0, windowSize.width, windowSize.height);
 		g.setColor(Color.white);
+		int mapPanelWidth = windowSize.width*2/3;
+		int mapPanelHeight = windowSize.height*2/3;
+		//map panel
+		g.drawRect(5, 5, mapPanelWidth, mapPanelHeight);
+		
+		//status panel
+		g.drawRect(5, mapPanelHeight+10, windowSize.width-10, windowSize.height-15);
+		
+		//dialog panel
+		g.drawRect(mapPanelWidth+10, 5, windowSize.width-10, mapPanelHeight);
+		
 		g.setFont(mapFont);
-		g.drawString("TEST", windowSize.width/2, windowSize.height/2);
+		//g.drawString("TEST", windowSize.width/2, windowSize.height/2);
 	}
 	
 	@Override
