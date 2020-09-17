@@ -25,8 +25,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	//Level Map
 	char levelMap[][];
 	//Level Map Size
-	public static final int _LEVELHEIGHT = 256;
-	public static final int _LEVELWIDTH = 256;
+	public static final int _LEVELHEIGHT = 512;
+	public static final int _LEVELWIDTH = 512;
 	
 	//Player
 	int playerX = 100;
@@ -77,14 +77,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		//status panel
 		g.drawRect(mapPanelWidth+10, 5, statusPanelWidth, mapPanelHeight);
 		
-		//draw level
+		
 		
 		g.setFont(mapFont);
-		for (int i = playerY-mapPanelHeight/_LEVELHEIGHT; i < levelMap.length; i++) {
-			for (int j = playerX-mapPanelWidth/_LEVELWIDTH; j < levelMap[i].length; j++) {
+		//Start positions clamped between 0 and padding from the max value
+		
+		int startX = Math.max(0, Math.min(playerX-mapPanelWidth/30, _LEVELWIDTH-mapPanelWidth/30));
+		int startY = Math.max(0, Math.min(playerY-mapPanelHeight/30, _LEVELHEIGHT-mapPanelHeight/30));
+		
+		//draw level in map panel
+		for (int i = startY; i < levelMap.length; i++) {
+			for (int j = startX; j < levelMap[i].length; j++) {
 				
-				int xScale = (j-playerX-mapPanelWidth/_LEVELWIDTH)*15+6;
-				int yScale = (i-playerY-mapPanelHeight/_LEVELHEIGHT)*15+6;
+				int xScale = (j-startX)*15+10;
+				int yScale = (i-startY)*15+20;
 				
 				if (xScale > 6 && xScale < mapPanelWidth && yScale > 6 && yScale < mapPanelHeight)
 					g.drawString(""+levelMap[i][j],  xScale, yScale);
