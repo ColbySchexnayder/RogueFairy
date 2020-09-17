@@ -78,9 +78,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 		g.setFont(mapFont);
 		// Start positions clamped between 0 and padding from the max value
-
-		int startX = Math.max(0, Math.min(playerX - mapPanelWidth / 30, _LEVELWIDTH - mapPanelWidth / 30));
-		int startY = Math.max(0, Math.min(playerY - mapPanelHeight / 30, _LEVELHEIGHT - mapPanelHeight / 30));
+		int windowScale = 30;
+		int startX = Math.max(0, Math.min(playerX - mapPanelWidth / windowScale, _LEVELWIDTH - mapPanelWidth / windowScale));
+		int startY = Math.max(0, Math.min(playerY - mapPanelHeight / windowScale, _LEVELHEIGHT - mapPanelHeight / windowScale));
 
 		// draw level in map panel
 		for (int i = startY; i < levelMap.length; i++) {
