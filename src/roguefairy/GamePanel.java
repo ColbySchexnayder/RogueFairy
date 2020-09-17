@@ -20,36 +20,18 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Timer frameDraw;
 
 	// Fonts
-	Font mapFont;
+	Font mapFont = new Font("Courier New", Font.PLAIN, 15);
 
-	// Level Map
-	char levelMap[][];
-	// Level Map Size
-	public static final int _LEVELHEIGHT = 512;
-	public static final int _LEVELWIDTH = 512;
-
+	Map map = new Map();
 	// Player
 	int playerX = 100;
 	int playerY = 112;
 	char playerChar = '@';
 
 	GamePanel() {
-		mapFont = new Font("Courier New", Font.PLAIN, 15);
+
 		frameDraw = new Timer(1000 / 60, this);
 		frameDraw.start();
-
-		levelMap = new char[_LEVELWIDTH][_LEVELHEIGHT];
-
-		// initialize map surrounding tiles should all be '#' walls
-		for (int i = 0; i < levelMap.length; i++) {
-			for (int j = 0; j < levelMap[i].length; j++) {
-				if (i == 0 || j == 0 || i == j) {
-					levelMap[i][j] = '#';
-				} else {
-					levelMap[i][j] = '.';
-				}
-			}
-		}
 
 	}
 
@@ -79,12 +61,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.setFont(mapFont);
 		// Start positions clamped between 0 and padding from the max value
 		int windowScale = 30;
-		int startX = Math.max(0, Math.min(playerX - mapPanelWidth / windowScale, _LEVELWIDTH - mapPanelWidth / windowScale));
-		int startY = Math.max(0, Math.min(playerY - mapPanelHeight / windowScale, _LEVELHEIGHT - mapPanelHeight / windowScale));
+		int startX = Math.max(0,
+				Math.min(playerX - mapPanelWidth / windowScale, Map._LEVELWIDTH - mapPanelWidth / windowScale));
+		int startY = Math.max(0,
+				Math.min(playerY - mapPanelHeight / windowScale, Map._LEVELHEIGHT - mapPanelHeight / windowScale));
 
 		// draw level in map panel
-		for (int i = startY; i < levelMap.length; i++) {
-			for (int j = startX; j < levelMap[i].length; j++) {
+		for (int i = startY; i < map.levelMap.length; i++) {
+			for (int j = startX; j < map.levelMap[i].length; j++) {
 
 				int xScale = (j - startX) * 15 + 10;
 				int yScale = (i - startY) * 15 + 20;
@@ -94,12 +78,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 					if (i == playerY && j == playerX) {
 						g.drawString("" + playerChar, xScale, yScale);
 					} else {
-						g.drawString("" + levelMap[i][j], xScale, yScale);
+						g.drawString("" + map.levelMap[i][j].glyph, xScale, yScale);
 					}
 				}
 			}
 		}
-		// g.drawString("TEST", windowSize.width/2, windowSize.height/2);
 	}
 
 	@Override
@@ -112,46 +95,58 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		case KeyEvent.VK_W:
 		case KeyEvent.VK_UP:
 		case KeyEvent.VK_NUMPAD8:
-			playerY--;
+			if (map.canMove(playerX, playerY - 1))
+				playerY--;
 			break;
-			
+
 		case KeyEvent.VK_S:
 		case KeyEvent.VK_DOWN:
 		case KeyEvent.VK_NUMPAD2:
-			playerY++;
+			if (map.canMove(playerX, playerY + 1))
+				playerY++;
 			break;
-			
+
 		case KeyEvent.VK_A:
 		case KeyEvent.VK_LEFT:
 		case KeyEvent.VK_NUMPAD4:
-			playerX--;
+			if (map.canMove(playerX - 1, playerY))
+				playerX--;
 			break;
-			
+
 		case KeyEvent.VK_D:
 		case KeyEvent.VK_RIGHT:
 		case KeyEvent.VK_NUMPAD6:
-			playerX++;
+			if (map.canMove(playerX + 1, playerY))
+				playerX++;
 			break;
-			
+
 		case KeyEvent.VK_NUMPAD7:
-			playerX--;
-			playerY--;
+			if (map.canMove(playerX - 1, playerY - 1)) {
+				playerX--;
+				playerY--;
+			}
 			break;
-			
+
 		case KeyEvent.VK_NUMPAD9:
-			playerX++;
-			playerY--;
+			if (map.canMove(playerX + 1, playerY - 1)) {
+				playerX++;
+				playerY--;
+			}
 			break;
-		
+
 		case KeyEvent.VK_NUMPAD1:
-			playerX--;
-			playerY++;
+			if (map.canMove(playerX - 1, playerY + 1)) {
+				playerX--;
+				playerY++;
+			}
 			break;
-			
+
 		case KeyEvent.VK_NUMPAD3:
-			playerX++;
-			playerY++;
-			break;
+			if (map.canMove(playerX + 1, playerY + 1)) {
+				playerX++;
+				playerY++;
+				break;
+			}
 		default:
 
 		}
