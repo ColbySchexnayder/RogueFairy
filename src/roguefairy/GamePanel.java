@@ -23,11 +23,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Font mapFont = new Font("Courier New", Font.PLAIN, 15);
 
 	Map map = new Map();
-	// Player
+	/* Player
 	int playerX = 100;
 	int playerY = 112;
 	char playerChar = '@';
-
+	//*/
 	GamePanel() {
 
 		frameDraw = new Timer(1000 / 60, this);
@@ -62,9 +62,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		// Start positions clamped between 0 and padding from the max value
 		int windowScale = 30;
 		int startX = Math.max(0,
-				Math.min(playerX - mapPanelWidth / windowScale, Map._LEVELWIDTH - mapPanelWidth / windowScale));
+				Math.min(map.player.x - mapPanelWidth / windowScale, Map._LEVELWIDTH - mapPanelWidth / windowScale));
 		int startY = Math.max(0,
-				Math.min(playerY - mapPanelHeight / windowScale, Map._LEVELHEIGHT - mapPanelHeight / windowScale));
+				Math.min(map.player.y - mapPanelHeight / windowScale, Map._LEVELHEIGHT - mapPanelHeight / windowScale));
 
 		// draw level in map panel
 		for (int i = startY; i < map.levelMap.length; i++) {
@@ -75,8 +75,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 				if (xScale > 6 && xScale < mapPanelWidth && yScale > 6 && yScale < mapPanelHeight) {
 
-					if (i == playerY && j == playerX) {
-						g.drawString("" + playerChar, xScale, yScale);
+					if (i == map.player.y && j == map.player.x) {
+						g.drawString("" + map.player.glyph, xScale, yScale);
 					} else {
 						g.drawString("" + map.levelMap[i][j].glyph, xScale, yScale);
 					}
@@ -95,58 +95,43 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		case KeyEvent.VK_W:
 		case KeyEvent.VK_UP:
 		case KeyEvent.VK_NUMPAD8:
-			if (map.canMove(playerX, playerY - 1))
-				playerY--;
+			map.playerMove(0, -1);
 			break;
 
 		case KeyEvent.VK_S:
 		case KeyEvent.VK_DOWN:
 		case KeyEvent.VK_NUMPAD2:
-			if (map.canMove(playerX, playerY + 1))
-				playerY++;
+			map.playerMove(0, 1);
 			break;
 
 		case KeyEvent.VK_A:
 		case KeyEvent.VK_LEFT:
 		case KeyEvent.VK_NUMPAD4:
-			if (map.canMove(playerX - 1, playerY))
-				playerX--;
+			map.playerMove(-1, 0);
 			break;
 
 		case KeyEvent.VK_D:
 		case KeyEvent.VK_RIGHT:
 		case KeyEvent.VK_NUMPAD6:
-			if (map.canMove(playerX + 1, playerY))
-				playerX++;
+			map.playerMove(1, 0);
 			break;
 
 		case KeyEvent.VK_NUMPAD7:
-			if (map.canMove(playerX - 1, playerY - 1)) {
-				playerX--;
-				playerY--;
-			}
+			map.playerMove(-1, -1);
 			break;
 
 		case KeyEvent.VK_NUMPAD9:
-			if (map.canMove(playerX + 1, playerY - 1)) {
-				playerX++;
-				playerY--;
-			}
+			map.playerMove(1, -1);
 			break;
 
 		case KeyEvent.VK_NUMPAD1:
-			if (map.canMove(playerX - 1, playerY + 1)) {
-				playerX--;
-				playerY++;
-			}
+			map.playerMove(-1, 1);
 			break;
 
 		case KeyEvent.VK_NUMPAD3:
-			if (map.canMove(playerX + 1, playerY + 1)) {
-				playerX++;
-				playerY++;
-				break;
-			}
+			map.playerMove(1, 1);
+			break;
+			
 		default:
 
 		}

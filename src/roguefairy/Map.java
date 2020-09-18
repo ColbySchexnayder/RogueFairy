@@ -7,6 +7,8 @@ public class Map {
 	public static final int _LEVELHEIGHT = 512;
 	public static final int _LEVELWIDTH = 512;
 
+	Entity player = new Entity('@', 10, 11);
+
 	Map() {
 		levelMap = new Tile[_LEVELWIDTH][_LEVELHEIGHT];
 
@@ -21,8 +23,17 @@ public class Map {
 			}
 		}
 	}
-	
+
 	public boolean canMove(int x, int y) {
 		return levelMap[y][x].passable;
+	}
+
+	public void playerMove(int deltaX, int deltaY) {
+		int x = player.x + deltaX;
+		int y = player.y + deltaY;
+		if (canMove(x, y)) {
+			player.x = x;
+			player.y = y;
+		}
 	}
 }
