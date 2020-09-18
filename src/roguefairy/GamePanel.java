@@ -23,11 +23,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Font mapFont = new Font("Courier New", Font.PLAIN, 15);
 
 	Map map = new Map();
-	/* Player
-	int playerX = 100;
-	int playerY = 112;
-	char playerChar = '@';
-	//*/
+	
 	GamePanel() {
 
 		frameDraw = new Timer(1000 / 60, this);
