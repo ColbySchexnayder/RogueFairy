@@ -15,7 +15,7 @@ public class Map {
 	public static final int _LEVELHEIGHT = 512;
 	public static final int _LEVELWIDTH = 512;
 
-	Entity player = new Entity('@', 10, 11);
+	Entity player = new Entity('@', 10, 11, 10);
 
 	Map() {
 		levelMap = new Tile[_LEVELHEIGHT][_LEVELWIDTH];
@@ -23,7 +23,7 @@ public class Map {
 		// initialize map surrounding tiles should all be '#' walls
 		// use caveChance is percent chance of spawning cave starting positions
 		startCave();
-		//Make caves more natural looking
+		// Make caves more natural looking
 		for (int i = 0; i < 2; i++) {
 			excavate();
 		}
@@ -48,24 +48,70 @@ public class Map {
 			for (int j = 0; j < levelMap[i].length; j++) {
 				int neighbors = countNeighborWalls(j, i);
 
-				if (levelMap[j][i].glyph == '#') {
+				if (levelMap[i][j].glyph == '#') {
 					if (neighbors < wallDeathLimit) {
-						newMap[j][i] = new Tile('.', false, true);
+						newMap[i][j] = new Tile('.', false, true);
 					} else {
-						newMap[j][i] = new Tile('#', true, false);
+						newMap[i][j] = new Tile('#', true, false);
 					}
 				} else {
 					if (neighbors > wallbirthLimit) {
-						newMap[j][i] = new Tile('#', true, false);
+						newMap[i][j] = new Tile('#', true, false);
 					} else {
-						newMap[j][i] = new Tile('.', false, true);
+						newMap[i][j] = new Tile('.', false, true);
 					}
 
 				}
 			}
 		}
-		
+
 		levelMap = newMap;
+	}
+
+	public void updateLOS(Entity e) {
+		if (e == null)
+			return;
+
+		for (int i = 0; i < levelMap.length; i++) {
+			for (int j = 0; j < levelMap.length; j++) {
+				if (levelMap[i][j].inLOS) {
+					levelMap[i][j].hasSeen = true;
+					levelMap[i][j].inLOS = false;
+				}
+			}
+		}
+		
+		for (int i = 0; i < levelMap.length; i++) {
+			for (int j = 0; j < levelMap[i].length; j++) {
+				// levelMap[i][j].hasSeen = false;
+				levelMap[i][j].inLOS = false;
+			}
+		}
+		
+
+		for (float i = 0; i < 360; i += .18) {
+			int distance = 0;
+			float x = e.x + .5f;
+			float y = e.y + .5f;
+			float xMove = (float) Math.cos(i);
+			float yMove = (float) Math.sin(i);
+
+			for (;;) {
+				x += xMove;
+				y += yMove;
+				distance++;
+				
+				if(distance>e.vision)
+					break;
+				if (x > _LEVELWIDTH-1 || x < 0 || y > _LEVELHEIGHT-1 || y < 0)
+					break;
+				
+				levelMap[(int)y][(int)x].inLOS = true;
+				
+				if (levelMap[(int) y ][(int) x].blockLOS)
+					break;
+			}
+		}
 	}
 
 	private int countNeighborWalls(int x, int y) {
@@ -77,7 +123,8 @@ public class Map {
 
 				if (i == 0 && j == 0) {
 
-				} else if (neighborX < 0 || neighborY < 0 || neighborX > _LEVELWIDTH-1 || neighborY > _LEVELHEIGHT-1) {
+				} else if (neighborX < 0 || neighborY < 0 || neighborX > _LEVELWIDTH - 1
+						|| neighborY > _LEVELHEIGHT - 1) {
 					count++;
 				} else if (levelMap[neighborY][neighborX].glyph == '#') {
 					count++;

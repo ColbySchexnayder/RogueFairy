@@ -62,6 +62,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		int startY = Math.max(0,
 				Math.min(map.player.y - mapPanelHeight / windowScale, Map._LEVELHEIGHT - mapPanelHeight / windowScale));
 
+		//check player los
+		map.updateLOS(map.player);
 		// draw level in map panel
 		for (int i = startY; i < map.levelMap.length; i++) {
 			for (int j = startX; j < map.levelMap[i].length; j++) {
@@ -74,7 +76,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 					if (i == map.player.y && j == map.player.x) {
 						g.drawString("" + map.player.glyph, xScale, yScale);
 					} else {
-						g.drawString("" + map.levelMap[i][j].glyph, xScale, yScale);
+						Tile tile= map.levelMap[i][j];
+						if (tile.inLOS) {
+							g.setColor(Color.white);
+							g.drawString("" + tile.glyph, xScale, yScale);
+						}else if (tile.hasSeen) {
+							g.setColor(Color.darkGray);
+							g.drawString("" + tile.glyph, xScale, yScale);
+						}
 					}
 				}
 			}
