@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Font mapFont = new Font("Courier New", Font.PLAIN, 15);
 
 	Map map = new Map();
-	
+
 	GamePanel() {
 
 		frameDraw = new Timer(1000 / 60, this);
@@ -62,7 +62,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		int startY = Math.max(0,
 				Math.min(map.player.y - mapPanelHeight / windowScale, Map._LEVELHEIGHT - mapPanelHeight / windowScale));
 
-		//check player los
+		// check player los
 		map.updateLOS(map.player);
 		// draw level in map panel
 		for (int i = startY; i < map.levelMap.length; i++) {
@@ -76,18 +76,32 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 					if (i == map.player.y && j == map.player.x) {
 						g.drawString("" + map.player.glyph, xScale, yScale);
 					} else {
-						Tile tile= map.levelMap[i][j];
-						if (tile.inLOS) {
-							g.setColor(Color.white);
-							g.drawString("" + tile.glyph, xScale, yScale);
-						}else if (tile.hasSeen) {
-							g.setColor(Color.darkGray);
-							g.drawString("" + tile.glyph, xScale, yScale);
+						boolean tileEmpty = true;
+						for (Entity e : map.entities) {
+							if (e.x == j && e.y == i) {
+								g.drawString("" + e.glyph, xScale, yScale);
+								tileEmpty = false;
+							}
+						}
+						Tile tile = map.levelMap[i][j];
+						if (tileEmpty) {
+							if (tile.inLOS) {
+								g.setColor(Color.white);
+								g.drawString("" + tile.glyph, xScale, yScale);
+							} else if (tile.hasSeen) {
+								g.setColor(Color.darkGray);
+								g.drawString("" + tile.glyph, xScale, yScale);
+							}
 						}
 					}
 				}
 			}
 		}
+
+		// draw player status in the status panel
+		g.setColor(Color.white);
+		g.drawString("Health: " + map.player.hp, mapPanelWidth + 15, 25);
+		g.drawString("Attack: " + map.player.physical, mapPanelWidth + 15, 40);
 	}
 
 	@Override
@@ -136,7 +150,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		case KeyEvent.VK_NUMPAD3:
 			map.playerMove(1, 1);
 			break;
-			
+
 		default:
 
 		}

@@ -1,5 +1,6 @@
 package roguefairy;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Map {
@@ -15,11 +16,13 @@ public class Map {
 	public static final int _LEVELHEIGHT = 512;
 	public static final int _LEVELWIDTH = 512;
 
-	Entity player = new Entity('@', 10, 11, 10);
+	Entity player = new Entity("player", '@', 10, 11, 10);
+	ArrayList<Entity> entities = new ArrayList<Entity>();
+	
 
 	Map() {
 		levelMap = new Tile[_LEVELHEIGHT][_LEVELWIDTH];
-
+		
 		// initialize map surrounding tiles should all be '#' walls
 		// use caveChance is percent chance of spawning cave starting positions
 		startCave();
@@ -27,6 +30,16 @@ public class Map {
 		for (int i = 0; i < 2; i++) {
 			excavate();
 		}
+		
+		//initialize player equipment
+		player.itemsEquipped.add(new Item("plain clothes", ']', player.x, player.y, 0, 2, 0));
+		player.itemsEquipped.add(new Item("dull sword", '/', player.x, player.y, 0, 0, 2));
+		for (Item item : player.itemsEquipped) {
+			player.hp += item.healthBonus;
+			player.physical += item.dmgBonus;
+		}
+		
+		entities.add(new Entity("Mentor", 'M', 15, 12, 10));
 	}
 
 	private void startCave() {
