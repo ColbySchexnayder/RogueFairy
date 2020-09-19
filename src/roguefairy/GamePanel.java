@@ -33,6 +33,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 	public void update() {
 		windowSize = this.getBounds();
+		map.update();
 	}
 
 	@Override
@@ -76,23 +77,24 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 					if (i == map.player.y && j == map.player.x) {
 						g.drawString("" + map.player.glyph, xScale, yScale);
 					} else {
-						boolean tileEmpty = true;
-						for (Entity e : map.entities) {
-							if (e.x == j && e.y == i) {
-								g.drawString("" + e.glyph, xScale, yScale);
-								tileEmpty = false;
-							}
-						}
+
 						Tile tile = map.levelMap[i][j];
-						if (tileEmpty) {
-							if (tile.inLOS) {
-								g.setColor(Color.white);
-								g.drawString("" + tile.glyph, xScale, yScale);
-							} else if (tile.hasSeen) {
-								g.setColor(Color.darkGray);
-								g.drawString("" + tile.glyph, xScale, yScale);
+
+						if (tile.inLOS) {
+							g.setColor(Color.white);
+							g.drawString("" + tile.glyph, xScale, yScale);
+							
+							for (Entity e : map.entities) {
+								if (e.x == j && e.y == i) {
+									g.drawString("" + e.glyph, xScale, yScale);
+
+								}
 							}
+						} else if (tile.hasSeen) {
+							g.setColor(Color.darkGray);
+							g.drawString("" + tile.glyph, xScale, yScale);
 						}
+
 					}
 				}
 			}

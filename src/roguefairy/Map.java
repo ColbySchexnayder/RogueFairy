@@ -81,6 +81,10 @@ public class Map {
 		levelMap = newMap;
 	}
 
+	public void update() {
+		
+	}
+	
 	public void updateLOS(Entity e) {
 		if (e == null)
 			return;
