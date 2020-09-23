@@ -152,6 +152,10 @@ public class Map {
 	}
 
 	public boolean canMove(int x, int y) {
+		for (Entity entity : entities) {
+			if (entity.y == y && entity.x == x)
+				return false;
+		}
 		return levelMap[y][x].passable;
 	}
 
