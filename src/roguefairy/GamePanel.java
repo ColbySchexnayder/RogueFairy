@@ -77,19 +77,24 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 					if (i == map.player.y && j == map.player.x) {
 						g.drawString("" + map.player.glyph, xScale, yScale);
 					} else {
-
 						Tile tile = map.levelMap[i][j];
-
+						boolean entityDrawn = false;
+						g.setColor(Color.white);
+						for (Entity e : map.entities) {
+							if (e.x == j && e.y == i && tile.inLOS) {
+								g.drawString("" + e.glyph, xScale, yScale);
+								entityDrawn = true;
+							}
+						}
+						if(entityDrawn)
+							continue;
+						
+						
 						if (tile.inLOS) {
-							g.setColor(Color.white);
+							
 							g.drawString("" + tile.glyph, xScale, yScale);
 							
-							for (Entity e : map.entities) {
-								if (e.x == j && e.y == i) {
-									g.drawString("" + e.glyph, xScale, yScale);
-
-								}
-							}
+							
 						} else if (tile.hasSeen) {
 							g.setColor(Color.darkGray);
 							g.drawString("" + tile.glyph, xScale, yScale);
